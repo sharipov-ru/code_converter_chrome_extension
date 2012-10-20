@@ -1,5 +1,5 @@
-function html2haml() {
-  htmlSample = "{page: {html: '<h1>Hello World</h1>'}}";
+function html2haml(selectedText) {
+  htmlSample = "{page: {html: '" + selectedText + "'}}";
 
   $.ajax({
     "url": "http://html2haml.heroku.com/api.json",
@@ -18,7 +18,9 @@ function html2haml() {
 var selectionParentMenu = chrome.contextMenus.create({
   "title": "Copy selected text as Haml",
   "contexts": ["selection"],
-  "onclick": html2haml
+  "onclick": function(info, tab) {
+    html2haml(info.selectionText);
+  }
 });
 
 // Create a parent item and two children.
