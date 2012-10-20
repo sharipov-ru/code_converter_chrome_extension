@@ -3,16 +3,11 @@
   "version": "1.0",
   "manifest_version": 2,
   "description": "Extension helps you to convert selected JS/CSS/HTML code to CoffeeScript/SASS/HAML",
-  "browser_action": {
-    "default_icon": "assets/images/icon.png",
-    "default_popup": "popup.html"
-  },
   "background": {
     "scripts": ["assets/javascripts/jquery.min.js", "assets/javascripts/main.js"]
   },
   "permissions": [
     "contextMenus",
-    "http://api.flickr.com/",
     "http://html2haml.heroku.com/"
   ]
 }
