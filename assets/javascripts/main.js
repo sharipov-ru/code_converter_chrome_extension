@@ -1,3 +1,12 @@
+function copyTextToClipboard(text) {
+    var copyFrom = $('<textarea/>');
+    copyFrom.text(text);
+    $('body').append(copyFrom);
+    copyFrom.select();
+    document.execCommand('copy');
+    copyFrom.remove();
+};
+
 function html2haml(selectedText) {
   htmlSample = "{page: {html: '" + selectedText + "'}}";
 
@@ -8,6 +17,7 @@ function html2haml(selectedText) {
     "dataType": "json",
     "success": function(data) {
       alert(data.page.haml);
+      copyTextToClipboard(data.page.haml);
     },
     "error": function(data) {
       alert('error');
@@ -15,26 +25,30 @@ function html2haml(selectedText) {
   });  
 };
 
-var selectionParentMenu = chrome.contextMenus.create({
-  "title": "Copy selected text as Haml",
+function css2sass(selectedText) { };
+function js2coffee(selectedText) { };
+
+
+var hamlMenu = chrome.contextMenus.create({
+  "title": "Copy as Haml",
   "contexts": ["selection"],
   "onclick": function(info, tab) {
     html2haml(info.selectionText);
   }
 });
 
-// Create a parent item and two children.
-// var parent = chrome.contextMenus.create({
-//   "title": "Test parent item"
-// });
-// var child1 = chrome.contextMenus.create({
-//   "title": "Child 1",
-//   "parentId": parent,
-//   "onclick": genericOnClick
-// });
-// var child2 = chrome.contextMenus.create({
-//   "title": "Child 2",
-//   "parentId": parent,
-//   "onclick": genericOnClick
-// });
-// console.log("parent:" + parent + " child1:" + child1 + " child2:" + child2);
+var sassMenu = chrome.contextMenus.create({
+  "title": "Copy as Sass",
+  "contexts": ["selection"],
+  "onclick": function(info, tab) {
+    css2sass(info.selectionText);
+  }
+});
+
+var sassMenu = chrome.contextMenus.create({
+  "title": "Copy as Coffescript",
+  "contexts": ["selection"],
+  "onclick": function(info, tab) {
+    js2coffee(info.selectionText);
+  }
+});
