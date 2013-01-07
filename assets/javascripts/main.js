@@ -47,7 +47,24 @@ function css2sass(selectedText, sassType) {
   });  
 };
 
-function js2coffee(selectedText) { };
+function js2coffee(selectedText) {
+  $.ajax({
+    "url": "http://git.rordev.ru:8080/convert",
+    "type": "POST",
+    "data": {
+      "js": selectedText,
+    },
+    "dataType": "json",
+    "success": function(data) {
+      alert(data.coffee);
+      copyTextToClipboard(data.coffee);
+    },
+    "error": function(data) {
+      console.log(data)
+      alert('error');
+    }
+  });  
+};
 
 
 var hamlMenu = chrome.contextMenus.create({

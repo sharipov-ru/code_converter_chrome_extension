@@ -1,5 +1,6 @@
 ## Description
-Google Chrome extension helps you to convert selected CSS/HTML code to SASS/SCSS/HAML format.
+Google Chrome extension helps you to convert selected CSS/HTML/JS code to SASS/SCSS/HAML/CoffeScript format.
+
 
 ## Test API calls
 html2haml:
@@ -10,8 +11,14 @@ css2sass:
 
     curl -v -H "Accept: application/json" -H "Content-type: application/x-www-form-urlencoded" -X POST --data-urlencode  'page[css]=.content {    color: red; }' http://css2sass.heroku.com/json
 
+js2coffee:
+
+    curl -v -H "Accept: application/json" -H "Content-type: application/x-www-form-urlencoded" -X POST --data-urlencode 'js=$("#stop").click(function(){   $("#panel").stop(); });' http://git.rordev.ru:8080/convert
+
+
 ## Special thanks
-to authors of html2haml and css2sass api services:
+to authors of html2haml, css2sass and js2coffee services:
 
 http://html2haml.heroku.com
 http://css2sass.heroku.com
+http://js2coffee.org/

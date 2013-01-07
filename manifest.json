@@ -9,6 +9,7 @@
   "permissions": [
     "contextMenus",
     "http://html2haml.heroku.com/",
-    "http://css2sass.heroku.com/"
+    "http://css2sass.heroku.com/",
+    "http://git.rordev.ru/"
   ]
 }
