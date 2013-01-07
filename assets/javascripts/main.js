@@ -25,7 +25,28 @@ function html2haml(selectedText) {
   });  
 };
 
-function css2sass(selectedText) { };
+function css2sass(selectedText, sassType) {
+  $.ajax({
+    "url": "http://css2sass.heroku.com/json",
+    "type": "POST",
+    "data": {
+      "page": {
+        "css" : selectedText
+      },
+      "commit": "Convert 2" + " " + sassType
+    },
+    "dataType": "json",
+    "success": function(data) {
+      alert(data.page.sass);
+      copyTextToClipboard(data.page.sass);
+    },
+    "error": function(data) {
+      console.log(data)
+      alert('error');
+    }
+  });  
+};
+
 function js2coffee(selectedText) { };
 
 
@@ -38,10 +59,18 @@ var hamlMenu = chrome.contextMenus.create({
 });
 
 var sassMenu = chrome.contextMenus.create({
-  "title": "Copy as Sass",
+  "title": "Copy as SASS",
   "contexts": ["selection"],
   "onclick": function(info, tab) {
-    css2sass(info.selectionText);
+    css2sass(info.selectionText, "SASS");
+  }
+});
+
+var scssMenu = chrome.contextMenus.create({
+  "title": "Copy as SCSS",
+  "contexts": ["selection"],
+  "onclick": function(info, tab) {
+    css2sass(info.selectionText, "SCSS");
   }
 });
 

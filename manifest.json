@@ -1,6 +1,6 @@
 {
   "name": "Code converter",
-  "version": "1.0",
+  "version": "1.1",
   "manifest_version": 2,
   "description": "Extension helps you to convert selected JS/CSS/HTML code to CoffeeScript/SASS/HAML",
   "background": {
@@ -8,6 +8,7 @@
   },
   "permissions": [
     "contextMenus",
-    "http://html2haml.heroku.com/"
+    "http://html2haml.heroku.com/",
+    "http://css2sass.heroku.com/"
   ]
 }
