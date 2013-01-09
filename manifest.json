@@ -1,10 +1,10 @@
 {
   "name": "Code converter",
-  "version": "1.1",
+  "version": "1.2",
   "manifest_version": 2,
   "description": "Extension helps you to convert selected JS/CSS/HTML code to CoffeeScript/SASS/HAML",
   "background": {
-    "scripts": ["assets/javascripts/jquery.min.js", "assets/javascripts/main.js"]
+    "scripts": ["libs/jquery.min.js", "build/application.js"]
   },
   "permissions": [
     "contextMenus",
