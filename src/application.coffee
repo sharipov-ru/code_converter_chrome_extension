@@ -31,6 +31,8 @@ class Application
 class Converter
   html2haml: (selectedText) =>
     htmlSample = "{page: {html: '#{selectedText}'}}"
+    notification = new Notification()
+    notification.show("info", "Converting html to haml...", "Results will be copied to your system buffer")
 
     $.ajax
       url: "http://html2haml.heroku.com/api.json",
@@ -38,9 +40,9 @@ class Converter
       data: htmlSample,
       dataType: "json",
       success: (data) ->
-        alert data.page.haml
         clipboard = new Clipboard()
         clipboard.copy(data.page.haml)
+        notification.show("success", "Converted!", "Results copied to your system buffer")
       error: (data) ->
         alert 'haml converting error'
 
@@ -54,9 +56,11 @@ class Converter
         commit: "Convert 2" + " " + sassType
       dataType: "json",
       success: (data) ->
-        alert data.page.sass
         clipboard = new Clipboard()
         clipboard.copy(data.page.sass)
+        
+        notification = new Notification()
+        notification.show("success", "Converting css to #{sassType}...", "Results will be copied to your system buffer")
       error: (data) ->
         alert 'saas converting error'
 
@@ -68,9 +72,11 @@ class Converter
         js: selectedText,
       dataType: "json",
       success: (data) ->
-        alert data.coffee
         clipboard = new Clipboard()
         clipboard.copy(data.coffee)
+        
+        notification = new Notification()
+        notification.show("success", "Converting js to coffeescript...", "Results will be copied to your system buffer")
       error: (data) ->
         alert 'coffescript converting error'
 
@@ -87,4 +93,28 @@ class Clipboard
     @document.execCommand('copy')
     @from.remove()
 
+# show notifications
+class Notification
+  SCRIPT_URL = "build/popup.js"
+
+  show: (type, title, content) ->
+    localStorage.setItem('converter-message-type', type)
+    localStorage.setItem('converter-message-title', title)
+    localStorage.setItem('converter-message-content', content)
+    chrome.tabs.executeScript null, { file: SCRIPT_URL }
+
 applcation = new Application()
+chrome.extension.onMessage.addListener (request, sender, sendResponse) ->
+  if (request.method == "getConverterData")
+    response =
+      type:    localStorage.getItem('converter-message-type')
+      title:   localStorage.getItem('converter-message-title')
+      content: localStorage.getItem('converter-message-content')
+    sendResponse(response)
+  else if (request.method == "clearConverterData")
+    localStorage.setItem('converter-message-type', null)
+    localStorage.setItem('converter-message-title', null)
+    localStorage.setItem('converter-message-content', null)
+    sendResponse({})
+  else
+    sendResponse({})
