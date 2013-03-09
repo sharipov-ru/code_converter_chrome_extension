@@ -1,6 +1,7 @@
 class Application
   constructor: ->
     @setupContextMenus()
+    @setupMessageListener()
     @converter = new Converter()
 
   setupContextMenus: =>
@@ -27,6 +28,22 @@ class Application
       contexts: ["selection"],
       onclick: (info, tab) =>
         @converter.js2coffee(info.selectionText)
+
+  setupMessageListener: ->
+    chrome.extension.onMessage.addListener (request, sender, sendResponse) ->
+      if (request.method == "getConverterData")
+        response =
+          type:    localStorage.getItem('converter-message-type')
+          title:   localStorage.getItem('converter-message-title')
+          content: localStorage.getItem('converter-message-content')
+        sendResponse(response)
+      else if (request.method == "clearConverterData")
+        localStorage.setItem('converter-message-type', null)
+        localStorage.setItem('converter-message-title', null)
+        localStorage.setItem('converter-message-content', null)
+        sendResponse({})
+      else
+        sendResponse({})
 
 class Converter
   constructor: ->
@@ -119,17 +136,3 @@ class Notification
     @show("success", "Converted!", SUCCESS_MESSAGE)
 
 applcation = new Application()
-chrome.extension.onMessage.addListener (request, sender, sendResponse) ->
-  if (request.method == "getConverterData")
-    response =
-      type:    localStorage.getItem('converter-message-type')
-      title:   localStorage.getItem('converter-message-title')
-      content: localStorage.getItem('converter-message-content')
-    sendResponse(response)
-  else if (request.method == "clearConverterData")
-    localStorage.setItem('converter-message-type', null)
-    localStorage.setItem('converter-message-title', null)
-    localStorage.setItem('converter-message-content', null)
-    sendResponse({})
-  else
-    sendResponse({})

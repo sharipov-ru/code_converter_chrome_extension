@@ -8,6 +8,7 @@
     function Application() {
       this.setupContextMenus = __bind(this.setupContextMenus, this);
       this.setupContextMenus();
+      this.setupMessageListener();
       this.converter = new Converter();
     }
 
@@ -40,6 +41,27 @@
         contexts: ["selection"],
         onclick: function(info, tab) {
           return _this.converter.js2coffee(info.selectionText);
+        }
+      });
+    };
+
+    Application.prototype.setupMessageListener = function() {
+      return chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+        var response;
+        if (request.method === "getConverterData") {
+          response = {
+            type: localStorage.getItem('converter-message-type'),
+            title: localStorage.getItem('converter-message-title'),
+            content: localStorage.getItem('converter-message-content')
+          };
+          return sendResponse(response);
+        } else if (request.method === "clearConverterData") {
+          localStorage.setItem('converter-message-type', null);
+          localStorage.setItem('converter-message-title', null);
+          localStorage.setItem('converter-message-content', null);
+          return sendResponse({});
+        } else {
+          return sendResponse({});
         }
       });
     };
@@ -192,24 +214,5 @@
   })();
 
   applcation = new Application();
-
-  chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
-    var response;
-    if (request.method === "getConverterData") {
-      response = {
-        type: localStorage.getItem('converter-message-type'),
-        title: localStorage.getItem('converter-message-title'),
-        content: localStorage.getItem('converter-message-content')
-      };
-      return sendResponse(response);
-    } else if (request.method === "clearConverterData") {
-      localStorage.setItem('converter-message-type', null);
-      localStorage.setItem('converter-message-title', null);
-      localStorage.setItem('converter-message-content', null);
-      return sendResponse({});
-    } else {
-      return sendResponse({});
-    }
-  });
 
 }).call(this);
