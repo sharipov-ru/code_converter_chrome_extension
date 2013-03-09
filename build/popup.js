@@ -28,7 +28,7 @@
 
     NotificationView.prototype.showNotification = function() {
       var htmlElement;
-      $("body").append("<div class='converter-popup converter-" + this.messageType + " converter-message'>                        <h3>" + this.messageTitle + "</h3>                        <p>" + this.messageContent + "</p>                      </div>");
+      $("body").append("<div class='converter-" + this.messageType + " converter-message'>                        <h3>" + this.messageTitle + "</h3>                        <p>" + this.messageContent + "</p>                      </div>");
       htmlElement = $('.converter-error, .converter-success, .converter-info, .converter-warning');
       htmlElement.animate({
         top: "0"

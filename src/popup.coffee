@@ -9,7 +9,7 @@ class NotificationView
     @messageType && @messageTitle && @messageContent
     
   showNotification: =>
-    $("body").append("<div class='converter-popup converter-#{@messageType} converter-message'>
+    $("body").append("<div class='converter-#{@messageType} converter-message'>
                         <h3>#{@messageTitle}</h3>
                         <p>#{@messageContent}</p>
                       </div>")
