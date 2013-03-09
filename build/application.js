@@ -186,7 +186,7 @@
 
     ERROR_MESSAGE = 'Please, make sure that snippet syntax is OK';
 
-    SUCCESS_MESSAGE = 'Results copied to your system buffer';
+    SUCCESS_MESSAGE = 'Results copied to your system buffer. Paste it in your favorite editor!';
 
     Notification.prototype.show = function(type, title, content) {
       localStorage.setItem('converter-message-type', type);

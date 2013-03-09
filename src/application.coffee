@@ -118,7 +118,7 @@ class Notification
 
   INFO_MESSAGE    = 'Results will be copied to your system buffer'
   ERROR_MESSAGE   = 'Please, make sure that snippet syntax is OK'
-  SUCCESS_MESSAGE = 'Results copied to your system buffer'
+  SUCCESS_MESSAGE = 'Results copied to your system buffer. Paste it in your favorite editor!'
   
   show: (type, title, content) ->
     localStorage.setItem('converter-message-type', type)
