@@ -29,24 +29,28 @@ class Application
         @converter.js2coffee(info.selectionText)
 
 class Converter
+  constructor: ->
+    @notification = new Notification()
+  
   html2haml: (selectedText) =>
     htmlSample = "{page: {html: '#{selectedText}'}}"
-    notification = new Notification()
-    notification.show("info", "Converting html to haml...", "Results will be copied to your system buffer")
+    @notification.showInfo("Converting html to haml...")
 
     $.ajax
       url: "http://html2haml.heroku.com/api.json",
       type: "POST",
       data: htmlSample,
       dataType: "json",
-      success: (data) ->
+      success: (data) =>
         clipboard = new Clipboard()
         clipboard.copy(data.page.haml)
-        notification.show("success", "Converted!", "Results copied to your system buffer")
-      error: (data) ->
-        alert 'haml converting error'
+        @notification.showSuccess()
+      error: (data) =>
+        @notification.showError()
 
   css2sass: (selectedText, sassType) =>
+    @notification.showInfo("Converting css to #{sassType}...")
+    
     $.ajax
       url: "http://css2sass.heroku.com/json",
       type: "POST",
@@ -55,30 +59,28 @@ class Converter
           css : selectedText
         commit: "Convert 2" + " " + sassType
       dataType: "json",
-      success: (data) ->
+      success: (data) =>
         clipboard = new Clipboard()
         clipboard.copy(data.page.sass)
-        
-        notification = new Notification()
-        notification.show("success", "Converting css to #{sassType}...", "Results will be copied to your system buffer")
-      error: (data) ->
-        alert 'saas converting error'
+        @notification.showSuccess()
+      error: (data) =>
+        @notification.showError()
 
   js2coffee: (selectedText) =>
+    @notification.showInfo("Converting js to coffeescript...")
+
     $.ajax
       url: "http://git.rordev.ru:8080/convert",
       type: "POST",
       data:
         js: selectedText,
       dataType: "json",
-      success: (data) ->
+      success: (data) =>
         clipboard = new Clipboard()
         clipboard.copy(data.coffee)
-        
-        notification = new Notification()
-        notification.show("success", "Converting js to coffeescript...", "Results will be copied to your system buffer")
-      error: (data) ->
-        alert 'coffescript converting error'
+        @notification.showSuccess()
+      error: (data) =>
+        @notification.showError()
 
 class Clipboard
   constructor: ->
@@ -97,11 +99,24 @@ class Clipboard
 class Notification
   SCRIPT_URL = "build/popup.js"
 
+  INFO_MESSAGE    = 'Results will be copied to your system buffer'
+  ERROR_MESSAGE   = 'Please, make sure that snippet syntax is OK'
+  SUCCESS_MESSAGE = 'Results copied to your system buffer'
+  
   show: (type, title, content) ->
     localStorage.setItem('converter-message-type', type)
     localStorage.setItem('converter-message-title', title)
     localStorage.setItem('converter-message-content', content)
     chrome.tabs.executeScript null, { file: SCRIPT_URL }
+
+  showInfo: (title) ->
+    @show('info', title, INFO_MESSAGE)
+
+  showError: () ->
+    @show('error', 'API Error', ERROR_MESSAGE)
+
+  showSuccess: () ->
+    @show("success", "Converted!", SUCCESS_MESSAGE)
 
 applcation = new Application()
 chrome.extension.onMessage.addListener (request, sender, sendResponse) ->

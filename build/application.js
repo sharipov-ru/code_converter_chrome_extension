@@ -56,14 +56,14 @@
       this.css2sass = __bind(this.css2sass, this);
 
       this.html2haml = __bind(this.html2haml, this);
-
+      this.notification = new Notification();
     }
 
     Converter.prototype.html2haml = function(selectedText) {
-      var htmlSample, notification;
+      var htmlSample,
+        _this = this;
       htmlSample = "{page: {html: '" + selectedText + "'}}";
-      notification = new Notification();
-      notification.show("info", "Converting html to haml...", "Results will be copied to your system buffer");
+      this.notification.showInfo("Converting html to haml...");
       return $.ajax({
         url: "http://html2haml.heroku.com/api.json",
         type: "POST",
@@ -73,15 +73,17 @@
           var clipboard;
           clipboard = new Clipboard();
           clipboard.copy(data.page.haml);
-          return notification.show("success", "Converted!", "Results copied to your system buffer");
+          return _this.notification.showSuccess();
         },
         error: function(data) {
-          return alert('haml converting error');
+          return _this.notification.showError();
         }
       });
     };
 
     Converter.prototype.css2sass = function(selectedText, sassType) {
+      var _this = this;
+      this.notification.showInfo("Converting css to " + sassType + "...");
       return $.ajax({
         url: "http://css2sass.heroku.com/json",
         type: "POST",
@@ -93,19 +95,20 @@
         },
         dataType: "json",
         success: function(data) {
-          var clipboard, notification;
+          var clipboard;
           clipboard = new Clipboard();
           clipboard.copy(data.page.sass);
-          notification = new Notification();
-          return notification.show("success", "Converting css to " + sassType + "...", "Results will be copied to your system buffer");
+          return _this.notification.showSuccess();
         },
         error: function(data) {
-          return alert('saas converting error');
+          return _this.notification.showError();
         }
       });
     };
 
     Converter.prototype.js2coffee = function(selectedText) {
+      var _this = this;
+      this.notification.showInfo("Converting js to coffeescript...");
       return $.ajax({
         url: "http://git.rordev.ru:8080/convert",
         type: "POST",
@@ -114,14 +117,13 @@
         },
         dataType: "json",
         success: function(data) {
-          var clipboard, notification;
+          var clipboard;
           clipboard = new Clipboard();
           clipboard.copy(data.coffee);
-          notification = new Notification();
-          return notification.show("success", "Converting js to coffeescript...", "Results will be copied to your system buffer");
+          return _this.notification.showSuccess();
         },
         error: function(data) {
-          return alert('coffescript converting error');
+          return _this.notification.showError();
         }
       });
     };
@@ -152,11 +154,17 @@
   })();
 
   Notification = (function() {
-    var SCRIPT_URL;
+    var ERROR_MESSAGE, INFO_MESSAGE, SCRIPT_URL, SUCCESS_MESSAGE;
 
     function Notification() {}
 
     SCRIPT_URL = "build/popup.js";
+
+    INFO_MESSAGE = 'Results will be copied to your system buffer';
+
+    ERROR_MESSAGE = 'Please, make sure that snippet syntax is OK';
+
+    SUCCESS_MESSAGE = 'Results copied to your system buffer';
 
     Notification.prototype.show = function(type, title, content) {
       localStorage.setItem('converter-message-type', type);
@@ -165,6 +173,18 @@
       return chrome.tabs.executeScript(null, {
         file: SCRIPT_URL
       });
+    };
+
+    Notification.prototype.showInfo = function(title) {
+      return this.show('info', title, INFO_MESSAGE);
+    };
+
+    Notification.prototype.showError = function() {
+      return this.show('error', 'API Error', ERROR_MESSAGE);
+    };
+
+    Notification.prototype.showSuccess = function() {
+      return this.show("success", "Converted!", SUCCESS_MESSAGE);
     };
 
     return Notification;
