@@ -6,7 +6,7 @@ class NotificationView
   constructor: (@messageType, @messageTitle, @messageContent) ->
 
   hasValidData: =>
-    @messageType && @messageTitle && @messageContent
+    @messageType != 'null' && @messageTitle != 'null' && @messageContent != 'null'
     
   showNotification: =>
     $("body").append("<div class='converter-#{@messageType} converter-message'>

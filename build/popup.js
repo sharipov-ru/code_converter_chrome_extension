@@ -23,7 +23,7 @@
     }
 
     NotificationView.prototype.hasValidData = function() {
-      return this.messageType && this.messageTitle && this.messageContent;
+      return this.messageType !== 'null' && this.messageTitle !== 'null' && this.messageContent !== 'null';
     };
 
     NotificationView.prototype.showNotification = function() {
